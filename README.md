@@ -1,3 +1,3 @@
 # Menu_Roulette
 
-![이미지 설명] (images/menu roulette.jpg)
+<img src="images/menu roulette.jpg">" width="600px" alt="대시보드 화면">
