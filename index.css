@@ -1,0 +1,1073 @@
+/* ============================================================
+   저메추 룰렛 — index.css
+   CSS 변수 기반 모던 다크 테마 디자인 시스템
+   ============================================================ */
+
+/* ── 반응형 휠 사이즈 변수 ───────────────────────────────── */
+/* --card-padding: 상단은 인디케이터(▼) 높이를 충분히 흡수할 수 있는 값 */
+:root {
+  --wheel-size:   450px;
+  --spin-size:     90px;
+  --indicator-fs:  28px;
+  --card-padding:  38px 28px 28px;  /* top 38px: 인디케이터 높이(~28px) + 여유 10px */
+}
+
+/* 태블릿 (600–959px) */
+@media (max-width: 959px) {
+  :root {
+    --wheel-size:   380px;
+    --spin-size:     76px;
+    --indicator-fs:  24px;
+    --card-padding:  32px 22px 22px;  /* top 32px: 인디케이터 높이(~24px) + 여유 8px */
+  }
+}
+
+/* 모바일 (≤599px) */
+@media (max-width: 599px) {
+  :root {
+    --wheel-size:   300px;
+    --spin-size:     60px;
+    --indicator-fs:  20px;
+    --card-padding:  28px 16px 18px;  /* top 28px: 인디케이터 높이(~20px) + 여유 8px */
+  }
+}
+
+/* ── 디자인 토큰 (CSS 변수) — 다크 모드 기본값 ──────────── */
+:root {
+  /* 배경 */
+  --bg-gradient:   linear-gradient(135deg, #1f1c2c 0%, #4a4265 60%, #928dab 100%);
+  --bg-card:       rgba(36, 33, 52, 0.88);
+  --bg-card-alt:   rgba(28, 26, 42, 0.92);
+  --bg-input:      #141320;
+  --bg-badge:      rgba(255, 255, 255, 0.07);
+  --bg-badge-hover:rgba(255, 255, 255, 0.13);
+  --bg-util-hover: rgba(255, 255, 255, 0.08);
+  --bg-preset:     rgba(255, 255, 255, 0.05);
+  --bg-modal:      linear-gradient(145deg, #2e2840, #1c1a2e);
+  --bg-canvas-center: rgba(20, 18, 32, 0.92);
+  --bg-canvas-empty:  rgba(40, 36, 60, 0.8);
+
+  /* 텍스트 */
+  --text-primary:  #ffffff;
+  --text-title:    #ffffff;
+  --text-muted:    #a0a0b8;
+  --text-dim:      #6a6a80;
+  --text-badge:    #dde0f0;
+  --text-modal-sub:#6a6888;
+
+  /* 포인트 */
+  --accent-orange: #ff7a00;
+  --accent-yellow: #ffcc00;
+  --accent-blue:   #2b5ee8;
+  --accent-purple: #7c3aed;
+
+  /* 테두리 */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-mid:    rgba(255, 255, 255, 0.14);
+
+  /* 토글 버튼 */
+  --toggle-bg:     rgba(36, 33, 52, 0.9);
+  --toggle-border: rgba(255, 255, 255, 0.18);
+  --toggle-shadow: rgba(0, 0, 0, 0.4);
+
+  /* 룰렛 10색 배열 */
+  --wc-1: #ff5e62;  --wc-2: #ff9966;  --wc-3: #ffde17;
+  --wc-4: #56ab2f;  --wc-5: #a8ff78;  --wc-6: #00c6ff;
+  --wc-7: #0072ff;  --wc-8: #fbc7d4;  --wc-9: #9796f0;
+  --wc-10:#b06ab3;
+}
+
+/* ── 라이트 모드 변수 재정의 ─────────────────────────────── */
+body.light {
+  --bg-gradient:    linear-gradient(135deg, #f4f0ff 0%, #ece5ff 50%, #ddd4ff 100%);
+  --bg-card:        rgba(255, 255, 255, 0.94);
+  --bg-card-alt:    rgba(250, 248, 255, 0.97);
+  --bg-input:       #f0ecff;
+  --bg-badge:       rgba(110, 80, 180, 0.08);
+  --bg-badge-hover: rgba(110, 80, 180, 0.14);
+  --bg-util-hover:  rgba(110, 80, 180, 0.08);
+  --bg-preset:      rgba(110, 80, 180, 0.05);
+  --bg-modal:       linear-gradient(145deg, #ffffff, #f5f2ff);
+  --bg-canvas-center: rgba(248, 246, 255, 0.95);
+  --bg-canvas-empty:  rgba(235, 228, 255, 0.85);
+
+  --text-primary:   #1a1730;
+  --text-title:     #1a1730;
+  --text-muted:     #5a5870;
+  --text-dim:       #8a88a8;
+  --text-badge:     #2a2840;
+  --text-modal-sub: #8a88a0;
+
+  --border-subtle:  rgba(110, 80, 180, 0.12);
+  --border-mid:     rgba(110, 80, 180, 0.2);
+
+  --toggle-bg:     rgba(255, 255, 255, 0.95);
+  --toggle-border: rgba(110, 80, 180, 0.25);
+  --toggle-shadow: rgba(110, 80, 180, 0.15);
+}
+
+/* ── 리셋 & 베이스 ────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  background: var(--bg-gradient);
+  min-height: 100vh;
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  /* 테마 전환 부드럽게 */
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+button { font-family: inherit; }
+input  { font-family: inherit; }
+
+/* ── 앱 래퍼 ─────────────────────────────────────────────── */
+.app-wrapper {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 36px 24px 60px;
+}
+
+/* ── 헤더 ────────────────────────────────────────────────── */
+.app-header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.app-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.title-white  { color: var(--text-title); }
+.title-accent { color: var(--accent-orange); }
+
+.app-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  letter-spacing: -0.2px;
+}
+
+/* ── 테마 토글 버튼 ──────────────────────────────────────── */
+.theme-toggle-btn {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--toggle-bg);
+  border: 1.5px solid var(--toggle-border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 12px var(--toggle-shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 50;
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: 0 4px 20px var(--toggle-shadow);
+  border-color: var(--accent-orange);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.95) rotate(-5deg);
+}
+
+.theme-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.theme-toggle-btn:hover .theme-icon {
+  transform: rotate(20deg) scale(1.1);
+}
+
+/* ── 메인 레이아웃 (2컬럼 Flex) ──────────────────────────── */
+.main-layout {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   좌측 — 룰렛 카드
+   ═══════════════════════════════════════════════════════════ */
+.roulette-section {
+  flex: 0 0 auto;
+}
+
+/* 카드 뷰 (룰렛 + 번개추천을 감싸는 카드)
+   ─ display:flex + flex-direction:column 으로 내부 요소를 순서대로 쌓음
+   ─ wheel-wrapper(원판) → gap → quick-pick-btn(번개) 순서로 절대 겹치지 않음 */
+.roulette-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;                      /* 원판 ↔ 번개 버튼 사이 여백 */
+  padding: var(--card-padding);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 24px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25),
+              0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  transition: background 0.35s ease,
+              border-color 0.35s ease,
+              box-shadow 0.35s ease;
+}
+
+/* 라이트 모드 카드 그림자 */
+body.light .roulette-card {
+  box-shadow: 0 8px 40px rgba(100, 80, 180, 0.12),
+              0 2px 8px rgba(0, 0, 0, 0.06),
+              0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+/* 휠 래퍼 (canvas + 버튼 겹침 컨테이너)
+   ─ SPIN 버튼은 이 안에서 absolute 로 중앙 배치됨
+   ─ 인디케이터는 top: -indicator-h 만큼 위로 나오므로 overflow: visible 유지
+   ─ canvas 는 CSS 가 width/height 를 var(--wheel-size) 로 제어 → JS 인라인 스타일 없음 */
+.wheel-wrapper {
+  position: relative;
+  width:  var(--wheel-size);
+  height: var(--wheel-size);
+  flex-shrink: 0;          /* 부모 flex 에서 압축되지 않도록 */
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+/* 인디케이터 (역삼각형)
+   wheel-wrapper 상단에 살짝 걸쳐 표시. roulette-card 의 상단 패딩이 흡수 */
+.indicator {
+  position: absolute;
+  top: -2px;               /* 패딩 안쪽에서 원판 바로 위에 붙임 */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  color: var(--accent-orange);
+  font-size: var(--indicator-fs);
+  line-height: 1;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7))
+          drop-shadow(0 0 6px rgba(255, 122, 0, 0.5));
+  pointer-events: none;
+}
+
+/* Canvas
+   ─ JS 는 드로잉 버퍼(canvas.width/height) 만 설정하고 style 은 건드리지 않음
+   ─ CSS 가 var(--wheel-size) 로 반응형 표시 크기 전담 */
+#rouletteCanvas {
+  display: block;
+  width:  var(--wheel-size);
+  height: var(--wheel-size);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 6px rgba(255, 255, 255, 0.06),
+    0 0 0 9px rgba(255, 255, 255, 0.03),
+    0 12px 50px rgba(0, 0, 0, 0.55);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+/* SPIN 버튼 (canvas 중앙 절대 위치, 3D 입체감) */
+.spin-btn {
+  position: absolute;
+  top:  50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width:  var(--spin-size);
+  height: var(--spin-size);
+  border-radius: 50%;
+
+  /* 3단 그라디언트 — 위→아래 밝기 차이로 구형 느낌 */
+  background: radial-gradient(circle at 38% 35%,
+    #ffb850 0%,
+    #ff7800 40%,
+    #cc4400 100%
+  );
+
+  /* 테두리: 두꺼운 흰 테두리로 부각 */
+  border: 3px solid rgba(255, 255, 255, 0.95);
+
+  color: #fff;
+  cursor: pointer;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  user-select: none;
+
+  /* ── 3D 그림자 레이어 ──
+     1) 하단 하드 그림자  → 두께감
+     2) 소프트 드롭      → 공중에 뜬 느낌
+     3) 오렌지 글로우    → 빛 번짐
+     4) 상단 내부 하이라이트 → 광택
+     5) 하단 내부 어둠   → 무게감
+  */
+  box-shadow:
+    0 7px 0   rgba(140, 40, 0, 0.20),
+    0 10px 22px rgba(0, 0, 0, 0.20),
+    0 0  30px rgba(255, 110, 0, 0.20),
+    inset 0  4px 10px rgba(255, 210, 120, 0.20),
+    inset 0 -4px  8px rgba(120, 35,   0, 0.20);
+
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+/* 호버 — 살짝 위로 들어올려지는 느낌 */
+.spin-btn:hover:not(:disabled) {
+  transform: translate(-50%, -50%) translateY(-2px) scale(1.05);
+  box-shadow:
+    0 9px 0   rgba(140, 40, 0, 0.20),
+    0 14px 28px rgba(0, 0, 0, 0.20),
+    0 0  40px rgba(255, 110, 0, 0.28),
+    inset 0  4px 10px rgba(255, 210, 120, 0.22),
+    inset 0 -4px  8px rgba(120, 35,   0, 0.20);
+}
+
+/* 클릭 — 눌려서 깊이가 줄어드는 느낌 */
+.spin-btn:active:not(:disabled) {
+  transform: translate(-50%, -50%) translateY(5px) scale(0.97);
+  box-shadow:
+    0 2px 0   rgba(140, 40, 0, 0.20),
+    0 4px 10px rgba(0, 0, 0, 0.18),
+    inset 0  2px  5px rgba(255, 210, 120, 0.15),
+    inset 0 -2px  5px rgba(120, 35,   0, 0.20);
+}
+
+.spin-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.60;
+}
+
+/* 돌리는 중 — 글로우 맥동 + 3D 유지 */
+.spin-btn.is-spinning {
+  animation: spinGlow3D 0.85s ease-in-out infinite;
+}
+
+@keyframes spinGlow3D {
+  0%, 100% {
+    box-shadow:
+      0 7px 0   rgba(140, 40, 0, 0.20),
+      0 10px 22px rgba(0, 0, 0, 0.20),
+      0 0  30px rgba(255, 110, 0, 0.20),
+      inset 0  4px 10px rgba(255, 210, 120, 0.20),
+      inset 0 -4px  8px rgba(120, 35,   0, 0.20);
+  }
+  50% {
+    box-shadow:
+      0 7px 0   rgba(140, 40, 0, 0.20),
+      0 10px 28px rgba(0, 0, 0, 0.20),
+      0 0  55px rgba(255, 150, 0, 0.35),
+      inset 0  4px 10px rgba(255, 220, 140, 0.22),
+      inset 0 -4px  8px rgba(120, 35,   0, 0.20);
+  }
+}
+
+.spin-label {
+  font-size: clamp(0.75rem, calc(var(--spin-size) * 0.115), 1.1rem);
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.spin-sub {
+  font-size: clamp(0.45rem, calc(var(--spin-size) * 0.065), 0.62rem);
+  opacity: 0.85;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* 번개 추천 버튼 */
+.quick-pick-btn {
+  width: 100%;        /* 카드 내 콘텐츠 너비에 맞춤 */
+  max-width: var(--wheel-size);   /* 휠 크기와 항상 동일하게 반응 */
+  padding: 15px 24px;
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 20px rgba(80, 50, 220, 0.45);
+  letter-spacing: -0.3px;
+}
+
+.quick-pick-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(80, 50, 220, 0.65);
+}
+
+.quick-pick-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.quick-pick-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.quick-sub {
+  font-size: 0.85em;
+  opacity: 0.82;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   우측 — 컨트롤 패널
+   ═══════════════════════════════════════════════════════════ */
+.control-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* 카드 공통 */
+.preset-section,
+.menu-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 22px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+body.light .preset-section,
+body.light .menu-section {
+  box-shadow: 0 4px 20px rgba(100, 80, 180, 0.08),
+              0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+/* ── 프리셋 섹션 ──────────────────────────────────────────── */
+.section-head { margin-bottom: 14px; }
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.section-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: -0.1px;
+}
+
+/* 2×2 프리셋 그리드 */
+.preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* 프리셋 버튼 공통 */
+.preset-btn {
+  padding: 12px 10px;
+  background: var(--bg-preset);
+  border: 1px solid var(--border-mid);
+  transition: all 0.2s ease, background 0.35s ease, border-color 0.35s ease;
+  border-radius: 11px;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.3px;
+}
+
+.preset-btn:hover:not(:disabled) {
+  background: rgba(255, 122, 0, 0.18);
+  border-color: rgba(255, 122, 0, 0.4);
+  color: #fff;
+  transform: scale(0.99);
+}
+
+.preset-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.preset-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* 활성(선택된) 프리셋 버튼 */
+.preset-btn.preset-active {
+  background: rgba(255, 122, 0, 0.28);
+  border-color: rgba(255, 122, 0, 0.75);
+  color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(255, 122, 0, 0.4),
+              inset 0 1px 3px rgba(255, 122, 0, 0.15);
+}
+
+.preset-btn.preset-active:hover:not(:disabled) {
+  background: rgba(255, 122, 0, 0.38);
+  border-color: rgba(255, 122, 0, 0.9);
+  transform: scale(0.99);
+}
+
+/* 나의 메뉴 버튼 활성 상태 */
+.my-menu-load-btn.preset-active {
+  background: rgba(255, 204, 0, 0.28) !important;
+  border-color: rgba(255, 204, 0, 0.75) !important;
+  color: #ffe566 !important;
+  box-shadow: 0 0 0 1px rgba(255, 204, 0, 0.4),
+              inset 0 1px 3px rgba(255, 204, 0, 0.15);
+}
+
+/* 나의 메뉴 행 */
+.my-menu-row {
+  display: flex;
+  gap: 8px;
+}
+
+.my-menu-load-btn {
+  flex: 1;
+  background: rgba(255, 204, 0, 0.08);
+  border-color: rgba(255, 204, 0, 0.2);
+  color: #f0d060;
+}
+
+.my-menu-load-btn:hover:not(:disabled) {
+  background: rgba(255, 204, 0, 0.2) !important;
+  border-color: rgba(255, 204, 0, 0.55) !important;
+  color: #ffdd44 !important;
+  transform: scale(0.99);
+}
+
+.my-menu-load-btn.has-saved {
+  border-color: rgba(255, 204, 0, 0.45);
+  background: rgba(255, 204, 0, 0.12);
+}
+
+/* 💾 저장 버튼 */
+.my-menu-save-btn {
+  flex-shrink: 0;
+  padding: 12px 14px;
+  background: rgba(255, 204, 0, 0.1);
+  border: 1px solid rgba(255, 204, 0, 0.25);
+  border-radius: 11px;
+  color: var(--accent-yellow);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.my-menu-save-btn:hover {
+  background: rgba(255, 204, 0, 0.22);
+  border-color: rgba(255, 204, 0, 0.55);
+  transform: scale(0.98);
+}
+
+.my-menu-save-btn:active { transform: scale(0.95); }
+
+/* ── 메뉴 후보지 섹션 ────────────────────────────────────── */
+.menu-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.menu-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+  line-height: 1.4;
+}
+
+.count-info {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.menu-utils {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.util-btn {
+  padding: 5px 10px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-size: 0.73rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+.util-btn:hover {
+  background: var(--bg-util-hover);
+  color: var(--text-primary);
+  border-color: var(--border-mid);
+}
+
+.util-btn:active { transform: scale(0.96); }
+
+/* 메뉴 추가 폼 */
+.menu-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: 11px;
+  padding: 0 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.35s ease;
+}
+
+.input-wrap:focus-within {
+  border-color: rgba(255, 122, 0, 0.55);
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
+}
+
+.input-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.menu-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 0.87rem;
+  padding: 13px 0;
+  letter-spacing: -0.2px;
+}
+
+.menu-input::placeholder { color: var(--text-dim); }
+
+.menu-input:disabled { opacity: 0.4; }
+
+/* + 추가 버튼 */
+.add-btn {
+  flex-shrink: 0;
+  padding: 0 20px;
+  background: linear-gradient(135deg, #ffcc00, #ff9500);
+  border: none;
+  border-radius: 11px;
+  color: #1a1000;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(255, 180, 0, 0.3);
+}
+
+.add-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 18px rgba(255, 180, 0, 0.5);
+}
+
+.add-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.add-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── 뱃지 컨테이너 ───────────────────────────────────────── */
+.badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  min-height: 36px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px 5px 10px;
+  background: var(--bg-badge);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.18s ease, background 0.35s ease;
+  user-select: none;
+  animation: badgeIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes badgeIn {
+  from { opacity: 0; transform: scale(0.6); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.badge:hover {
+  background: var(--bg-badge-hover);
+  border-color: var(--border-mid);
+}
+
+.badge.badge-disabled {
+  opacity: 0.32;
+}
+
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.badge-text {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-badge);
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.35s ease;
+}
+
+.badge-del {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 0.68rem;
+  cursor: pointer;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.badge-del:hover {
+  color: #ff5555;
+  background: rgba(255, 80, 80, 0.18);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   결과 모달
+   ═══════════════════════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-card {
+  background: var(--bg-modal);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 26px;
+  padding: 44px 52px;
+  text-align: center;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.75);
+  transform: scale(0.82) translateY(12px);
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-width: 310px;
+  max-width: 440px;
+}
+
+.modal-overlay.active .modal-card {
+  transform: scale(1) translateY(0);
+}
+
+/* 라이트 모드 모달 */
+body.light .modal-card {
+  border-color: rgba(110, 80, 180, 0.15);
+  box-shadow: 0 30px 90px rgba(100, 80, 180, 0.15);
+}
+
+body.light .modal-btn-retry {
+  background: rgba(110, 80, 180, 0.06);
+  color: var(--text-muted);
+  border-color: rgba(110, 80, 180, 0.18);
+}
+
+body.light .modal-btn-retry:hover {
+  background: rgba(110, 80, 180, 0.12);
+  color: var(--text-primary);
+}
+
+.modal-emoji {
+  font-size: 3.2rem;
+  margin-bottom: 6px;
+  animation: modalBounce 0.55s ease;
+}
+
+@keyframes modalBounce {
+  0%          { transform: scale(0.3) rotate(-10deg); }
+  60%         { transform: scale(1.15) rotate(3deg); }
+  80%         { transform: scale(0.95) rotate(-1deg); }
+  100%        { transform: scale(1) rotate(0deg); }
+}
+
+.modal-label {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.modal-result {
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--accent-orange);
+  margin-bottom: 8px;
+  letter-spacing: -1px;
+  text-shadow: 0 0 40px rgba(255, 122, 0, 0.45);
+}
+
+.modal-sub {
+  font-size: 0.88rem;
+  color: var(--text-modal-sub);
+  margin-bottom: 28px;
+  transition: color 0.35s ease;
+}
+
+.modal-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.modal-btn-retry,
+.modal-btn-close {
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.modal-btn-retry {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+.modal-btn-retry:hover {
+  background: rgba(255, 255, 255, 0.13);
+  color: #fff;
+}
+
+.modal-btn-close {
+  background: linear-gradient(135deg, #ff8c00, #e85500);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255, 100, 0, 0.4);
+}
+
+.modal-btn-close:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(255, 100, 0, 0.6);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   토스트 알림
+   ═══════════════════════════════════════════════════════════ */
+.toast-container {
+  position: fixed;
+  bottom: 26px;
+  right: 26px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  padding: 11px 18px;
+  border-radius: 11px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+  transform: translateX(130%);
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 290px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.toast.show { transform: translateX(0); }
+
+.toast-info    { background: rgba(44, 42, 72, 0.95); border-left: 3px solid #7070ee; }
+.toast-success { background: rgba(24, 52, 32, 0.95); border-left: 3px solid #56ab2f; }
+.toast-warn    { background: rgba(52, 36, 16, 0.95); border-left: 3px solid #ff9500; }
+.toast-error   { background: rgba(52, 20, 20, 0.95); border-left: 3px solid #ff4444; }
+
+/* 라이트 모드 토스트 */
+body.light .toast-info    { background: rgba(240,236,255,0.97); color: #3a3860; border-left-color: #7070ee; }
+body.light .toast-success { background: rgba(236,255,240,0.97); color: #1a4028; border-left-color: #40a028; }
+body.light .toast-warn    { background: rgba(255,248,235,0.97); color: #5a3800; border-left-color: #cc7700; }
+body.light .toast-error   { background: rgba(255,238,238,0.97); color: #5a1818; border-left-color: #dd3333; }
+
+/* ═══════════════════════════════════════════════════════════
+   반응형 레이아웃
+   PC     : ≥ 960px  — 2컬럼 (좌: 컨트롤패널 / 우: 돌림판)
+   태블릿 : 600–959px — 1컬럼 스택 (위: 컨트롤패널 / 아래: 돌림판)
+   모바일 : ≤ 599px  — 1컬럼 스택 (위: 컨트롤패널 / 아래: 돌림판)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 태블릿 · 모바일 공통: 1컬럼 스택 ───────────────────── */
+@media (max-width: 959px) {
+  .app-wrapper {
+    padding: 28px 20px 48px;
+  }
+
+  .app-title { font-size: 2.1rem; }
+
+  /* HTML 순서대로 컨트롤패널(위) → 돌림판(아래) */
+  .main-layout {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .control-panel {
+    width: 100%;
+    max-width: 560px;
+  }
+
+  /* 돌림판 카드: 휠 크기 + 좌우 패딩(22px×2) + 보더(2px) */
+  .roulette-section {
+    width: 100%;
+    max-width: calc(var(--wheel-size) + 46px);
+  }
+
+  .roulette-card {
+    width: 100%;
+  }
+
+  /* 테마 버튼 위치 조정 */
+  .theme-toggle-btn {
+    top: 4px;
+    right: 4px;
+  }
+}
+
+/* ── 모바일 (≤ 599px) ────────────────────────────────────── */
+@media (max-width: 599px) {
+  .app-wrapper { padding: 20px 12px 40px; }
+
+  .app-title { font-size: 1.75rem; }
+
+  .app-subtitle { font-size: 0.82rem; }
+
+  /* 세 카드(프리셋·후보지·돌림판) 너비 통일:
+     돌림판 카드와 동일한 calc(--wheel-size + 46px) = 346px */
+  .control-panel,
+  .roulette-section {
+    max-width: calc(var(--wheel-size) + 46px);
+  }
+
+  .roulette-card {
+    border-radius: 18px;
+  }
+
+  /* 프리셋 버튼: 2열 유지, 폰트 축소 */
+  .preset-btn { font-size: 0.78rem; padding: 10px 6px; }
+
+  .section-title { font-size: 0.9rem; }
+  .menu-title    { font-size: 0.88rem; }
+
+  /* 메뉴 입력폼 */
+  .menu-input  { font-size: 0.8rem; }
+  .add-btn     { padding: 0 14px; font-size: 0.82rem; }
+
+  /* 뱃지 */
+  .badge-text  { font-size: 0.74rem; max-width: 65px; }
+
+  /* 모달 */
+  .modal-card {
+    padding: 30px 22px;
+    margin: 12px;
+    min-width: unset;
+    border-radius: 20px;
+  }
+  .modal-result  { font-size: 1.8rem; }
+  .modal-emoji   { font-size: 2.4rem; }
+  .modal-btn-retry,
+  .modal-btn-close { padding: 10px 16px; font-size: 0.82rem; }
+
+  /* 유틸 버튼 */
+  .util-btn { padding: 4px 8px; font-size: 0.68rem; }
+
+  /* 나의 메뉴 저장 버튼 */
+  .my-menu-save-btn { padding: 10px 10px; font-size: 0.78rem; }
+
+  /* 테마 버튼 */
+  .theme-toggle-btn { width: 38px; height: 38px; }
+  .theme-icon { font-size: 1.1rem; }
+}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🍴 메뉴 룰렛</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+
+  <div class="app-wrapper">
+
+    <!-- ── 헤더 ── -->
+    <header class="app-header">
+      <!-- 다크/라이트 모드 토글 -->
+      <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="테마 변경" title="다크/라이트 모드 전환">
+        <span class="theme-icon">🌙</span>
+      </button>
+
+      <h1 class="app-title">🍴 <span class="title-white">메뉴 추천</span> <span class="title-accent">룰렛</span></h1>
+      <p class="app-subtitle">오늘 메뉴 고르기 힘드셨죠? 룰렛을 돌려 고민을 한 방에 해결해보세요!</p>
+    </header>
+
+    <!-- ── 메인 레이아웃 (2컬럼: 좌=컨트롤, 우=룰렛) ── -->
+    <div class="main-layout">
+
+      <!-- ── 좌측: 컨트롤 패널 ── -->
+      <aside class="control-panel">
+
+        <!-- 프리셋 섹션 -->
+        <section class="preset-section">
+          <div class="section-head">
+            <h2 class="section-title">🎛️ 취향 맞춤 프리셋</h2>
+            <p class="section-desc">오늘 기분에 맞춰 추천 목록을 한 번에 구성해보세요.</p>
+          </div>
+
+          <!-- 4개 프리셋 그리드 -->
+          <div class="preset-grid">
+            <button class="preset-btn" data-preset="office">💼 직장인 인기</button>
+            <button class="preset-btn" data-preset="solo">🏠 자취생 초간단</button>
+            <button class="preset-btn" data-preset="health">🥗 건강 &amp; 다이어트</button>
+            <button class="preset-btn" data-preset="night">🌙 침샘자극 야식</button>
+          </div>
+
+          <!-- 나의 메뉴 행 -->
+          <div class="my-menu-row">
+            <button class="preset-btn my-menu-load-btn" id="myMenuLoadBtn">
+              ⭐ 나의 메뉴
+            </button>
+            <button class="my-menu-save-btn" id="myMenuSaveBtn" title="현재 후보지 목록을 나의 메뉴로 저장">
+              💾 저장
+            </button>
+          </div>
+        </section>
+
+        <!-- 메뉴 후보지 섹션 -->
+        <section class="menu-section">
+          <div class="menu-head">
+            <h2 class="menu-title">
+              📋 저녁 메뉴 후보지
+              <span class="count-info">(<span id="activeCount">0</span>개 / 최대 12개)</span>
+            </h2>
+            <div class="menu-utils">
+              <button id="clearAllBtn" class="util-btn">🗑️ 전체삭제</button>
+              <button id="defaultMenuBtn" class="util-btn">↩️ 기본메뉴</button>
+            </div>
+          </div>
+
+          <!-- 메뉴 추가 폼 -->
+          <form id="menuForm" class="menu-form">
+            <label class="input-wrap" for="menuInput">
+              <span class="input-icon">🍴</span>
+              <input
+                type="text"
+                id="menuInput"
+                class="menu-input"
+                placeholder="추가할 메뉴 입력 (예: 제육볶음, 돈까스)"
+                autocomplete="off"
+                maxlength="20"
+              />
+            </label>
+            <button type="submit" id="addBtn" class="add-btn">+ 추가</button>
+          </form>
+
+          <!-- 뱃지 컨테이너 -->
+          <div id="badgeContainer" class="badge-container"></div>
+        </section>
+
+      </aside>
+
+      <!-- ── 우측: 룰렛 카드 ── -->
+      <main class="roulette-section roulette-card">
+        <div class="wheel-wrapper">
+          <!-- 인디케이터 (상단 삼각형) -->
+          <div class="indicator" aria-hidden="true">▼</div>
+
+          <!-- Canvas -->
+          <canvas id="rouletteCanvas" width="450" height="450"></canvas>
+
+          <!-- SPIN 버튼 (canvas 중앙 절대 위치) -->
+          <button id="spinBtn" class="spin-btn" aria-label="룰렛 돌리기">
+            <span class="spin-label">SPIN</span>
+            <span class="spin-sub">돌리기</span>
+          </button>
+        </div>
+
+        <!-- 번개 추천 버튼 -->
+        <button id="quickPickBtn" class="quick-pick-btn">
+          ⚡ 번개 추천 <span class="quick-sub">(바로 고르기)</span>
+        </button>
+      </main>
+
+    </div><!-- /.main-layout -->
+
+  </div><!-- /.app-wrapper -->
+
+  <!-- ── 결과 모달 ── -->
+  <div id="resultModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalLabel">
+    <div class="modal-card">
+      <div class="modal-emoji" id="modalEmoji">🎉</div>
+      <p class="modal-label" id="modalLabel">오늘의 메뉴!</p>
+      <p class="modal-result" id="modalResult"></p>
+      <p class="modal-sub">맛있게 드세요 😋</p>
+      <div class="modal-btns">
+        <button id="modalRetryBtn" class="modal-btn-retry">🔄 다시 돌리기</button>
+        <button id="modalCloseBtn" class="modal-btn-close">✓ 확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 토스트 컨테이너 ── -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="index.js"></script>
+</body>
+</html>
